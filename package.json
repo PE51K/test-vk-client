@@ -2,6 +2,7 @@
   "name": "test_vk_frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://github.com/PE51K/test-vk-client",
   "dependencies": {
     "@emotion/react": "*",
     "@emotion/styled": "*",
