@@ -1,17 +1,17 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-
-import styles from './Header.module.css';
 import Container from '@mui/material/Container';
 import {Link} from "react-router-dom";
-import {$authData, $isAuth, logoutFx} from "../../effector";
 import {useStore} from "effector-react";
 
-export const Header = () => {
-  const isAuth = useStore($isAuth)
-  const authDataId = useStore($authData)?._id
+import styles from './Header.module.css';
+import {$authData, $isAuth, logoutFx} from "../../effector";
 
-  const onClickLogout = () => {
+export const Header = () => {
+  const isAuth: boolean = useStore($isAuth)
+  const authDataId: string | undefined = useStore($authData)?._id
+
+  const onClickLogout = (): void => {
     if (window.confirm('Вы действительно хотите выйти?')) {
       logoutFx(undefined).finally();
       window.localStorage.removeItem('token')

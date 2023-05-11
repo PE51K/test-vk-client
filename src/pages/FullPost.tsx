@@ -1,15 +1,16 @@
 import React from "react";
-
-import { Post } from "../components/Post";
 import {useParams} from "react-router-dom";
-import axios from "../axios";
 import ReactMarkdown from "react-markdown";
 import {useStore} from "effector-react";
+
 import {$isAuth, $postsFetchingStatus} from "../effector";
+import {Post} from "../components";
+import axios from "../axios";
+import {FullPostProps} from "../interfaces";
 
 export const FullPost = () => {
     const isAuth = useStore($isAuth)
-    const [data, setData] = React.useState()
+    const [data, setData] = React.useState<FullPostProps | undefined>(undefined)
     const [isLoading, setLoading] = React.useState(true)
     const {id} = useParams()
     const postsFetchingStatus = useStore($postsFetchingStatus)
@@ -26,39 +27,40 @@ export const FullPost = () => {
             })
     }, [postsFetchingStatus])
 
-    if (isLoading) {
-        return <Post isLoading={isLoading} id={undefined} title={undefined} createdAt={undefined} imageUrl={undefined}
-                     user={undefined} viewsCount={undefined} likes={undefined} children={undefined}
-                     isFullPost={undefined} isEditable={undefined} userId={undefined} isAuth={undefined}/>
+    if (isLoading || !data) {
+        return <Post isLoading={isLoading}
+                     id={undefined}
+                     title={undefined}
+                     createdAt={undefined}
+                     imageUrl={undefined}
+                     user={undefined}
+                     viewsCount={undefined}
+                     likes={undefined}
+                     children={undefined}
+                     isFullPost={undefined}
+                     isEditable={undefined}
+                     isAuth={undefined}
+                     currentUserId={undefined}
+        />
     }
 
   return (
     <>
       <Post
-        // @ts-ignore
-        id = {data._id}
-        // @ts-ignore
-        title = {data.title}
-        // @ts-ignore
-        imageUrl= {data.imageUrl?`https://test-vk-server.onrender.com${data.imageUrl}`:''}
-        // @ts-ignore
-        user = {data.user}
-        // @ts-ignore
+        id={data._id}
+        title={data.title}
+        imageUrl={data.imageUrl ? `https://test-vk-server.onrender.com${data.imageUrl}` : ''}
+        user={data.user}
         createdAt={data.createdAt}
-        // @ts-ignore
         viewsCount={data.viewsCount}
-        // @ts-ignore
         likes={data.likes}
-        // @ts-ignore
-        userId={data.user._id}
-        // @ts-ignore
+        currentUserId={data.user._id}
         isAuth={isAuth}
-        // @ts-ignore
-        tags={data.tags}
-        isFullPost
+        isFullPost={true}
+        isLoading={false}
+        isEditable={false}
       >
-          <ReactMarkdown // @ts-ignore
-          children={data.text}/>
+          <ReactMarkdown children={data.text}/>
       </Post>
     </>
     );

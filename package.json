@@ -1,46 +1,26 @@
 {
-  "name": "test_vk_frontend",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "https://github.com/PE51K/test-vk-client",
+  "name": "test_vk_client",
+  "version": "1.0.0",
   "dependencies": {
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@testing-library/jest-dom": "*",
-    "@testing-library/react": "*",
-    "@testing-library/user-event": "*",
-    "@types/jest": "*",
-    "@types/node": "*",
-    "@types/react": "*",
-    "@types/react-dom": "*",
     "axios": "*",
-    "effector": "*",
     "effector-react": "*",
     "react": "*",
     "react-dom": "*",
     "react-hook-form": "*",
     "react-markdown": "*",
     "react-router-dom": "*",
-    "react-scripts": "*",
-    "react-simplemde-editor": "*",
-    "typescript": "*",
-    "web-vitals": "*"
+    "react-simplemde-editor": "*"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy" : "npm run build",
-    "deploy" : "gh-pages -d build"
+    "build": "react-scripts build"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "devDependencies": {
+    "react-scripts": "^5.0.1"
   },
   "browserslist": {
     "production": [

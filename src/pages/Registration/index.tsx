@@ -4,12 +4,12 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
-
-import styles from './Registration.module.css';
 import {Navigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {$isAuth, fetchRegisterFx} from '../../effector'
 import {useStore} from "effector-react";
+
+import styles from './Registration.module.css';
+import {$isAuth, fetchRegisterFx} from '../../effector'
 import {AuthResponse} from "../../interfaces";
 import {FormValues} from "../../types";
 
@@ -35,7 +35,7 @@ export const Registration = () => {
 
   const onSubmit = async (values: any) => {
     try {
-      const data: AuthResponse | undefined = await fetchRegisterFx(values)
+      const data: AuthResponse | null | undefined = await fetchRegisterFx(values);
       if (!data) {
         alert('Не удалось зарегистрироваться')
       } else if ('token' in data) {

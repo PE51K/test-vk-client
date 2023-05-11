@@ -3,37 +3,59 @@ import axios from '..//axios'
 import {AuthResponse} from "../interfaces";
 import {AuthData, AuthStatus} from "../types";
 
-export const fetchAuthFx = createEffect(async (params: any): Promise<AuthResponse> => {
-  const { data } = await axios.post("/auth/login", params);
-  return data;
+export const fetchAuthFx = createEffect(async (params: any): Promise<AuthResponse | null> => {
+  try {
+    const { data } = await axios.post("/auth/login", params);
+    return data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 403) {
+      console.log('Insufficient permissions. Skipping request.');
+    } else {
+      console.log('Error:', error.message);
+    }
+
+    return null;
+  }
 });
 
-export const fetchRegisterFx = createEffect(async (params: any): Promise<AuthResponse> => {
-  const { data } = await axios.post("/auth/register", params);
-  return data;
+export const fetchRegisterFx = createEffect(async (params: any): Promise<AuthResponse | null> => {
+  try {
+    const { data } = await axios.post("/auth/register", params);
+    return data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 403) {
+      console.log('Insufficient permissions. Skipping request.');
+    } else {
+      console.log('Error:', error.message);
+    }
+
+    return null;
+  }
 });
 
-export const fetchAuthMeFx = createEffect(async (): Promise<AuthResponse> => {
-  const { data } = await axios.get("/auth/me");
-  return data;
+export const fetchAuthMeFx = createEffect(async (): Promise<AuthResponse | null> => {
+  try {
+    const { data } = await axios.get("/auth/me");
+    return data;
+  } catch (error : any) {
+    if (error.response && error.response.status === 403) {
+      console.log('Insufficient permissions. Skipping request.');
+    } else {
+      console.log('Error:', error.message);
+    }
+
+    return null;
+  }
 });
 
 export const logoutFx = createEffect(() => {});
 
 export const $authData = createStore<AuthData | null>(null)
   .on(logoutFx, () => null)
-  .on(fetchAuthFx.done, (state, { result }) => ({
-    ...state,
-    ...result,
-  }))
-  .on(fetchAuthMeFx.done, (state, { result }) => ({
-    ...state,
-    ...result,
-  }))
-  .on(fetchRegisterFx.done, (state, { result }) => ({
-    ...state,
-    ...result,
-  }));
+  .on(fetchAuthFx.doneData, (state, payload) => payload !== null ? { ...state, ...payload } : state)
+  .on(fetchAuthMeFx.doneData, (state, payload) => payload !== null ? { ...state, ...payload } : state)
+  .on(fetchRegisterFx.doneData, (state, payload) => payload !== null ? { ...state, ...payload } : state)
+  .reset(fetchAuthFx.fail, fetchAuthMeFx.fail, fetchRegisterFx.fail);
 
 const initialAuthStatus: AuthStatus = {
   fetchAuth: "idle",

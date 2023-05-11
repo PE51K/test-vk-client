@@ -3,11 +3,11 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-
-import styles from "./Login.module.css";
 import {useForm} from "react-hook-form";
 import {Navigate} from "react-router-dom";
 import {useStore} from 'effector-react';
+
+import styles from "./Login.module.css";
 import {$isAuth, fetchAuthFx} from '../../effector'
 import {AuthResponse} from "../../interfaces";
 
@@ -30,7 +30,7 @@ export const Login = () => {
 
   const onSubmit = async (values: any) => {
     try {
-      const data: AuthResponse | undefined = await fetchAuthFx(values)
+      const data: AuthResponse | null | undefined = await fetchAuthFx(values);
       if (!data) {
         alert('Не удалось авторизоваться')
       } else {

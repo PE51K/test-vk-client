@@ -3,7 +3,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
 
-import { Post } from '../components/Post';
+import {Post} from '../components';
+import {useStore} from "effector-react";
 import {
   $authData,
   $isAuth,
@@ -13,7 +14,7 @@ import {
   fetchFriendsPostsFx,
   fetchPostsFx
 } from "../effector";
-import {useStore} from "effector-react";
+
 
 export const Home = () => {
     const isAuth = useStore($isAuth)
@@ -21,7 +22,6 @@ export const Home = () => {
     const userData = useStore($authData);
     const postsFetchingStatus = useStore($postsFetchingStatus)
     const isPostsLoading = postsFetchingStatus.fetchPosts === 'loading'
-
     const [selectedTab, setSelectedTab] = useState(0);
 
     const handleTabChange = (event: any, newValue: React.SetStateAction<number>) => {
@@ -53,10 +53,21 @@ export const Home = () => {
             <Grid xs={8} item>
               {(isPostsLoading ? [...Array(5)] : posts).map((obj, index) =>
                 isPostsLoading ? (
-                    <Post key={index} isLoading={true} id={undefined} title={undefined} createdAt={undefined}
-                          imageUrl={undefined} user={undefined} viewsCount={undefined} likes={undefined}
-                          children={undefined} isFullPost={undefined} isEditable={undefined} userId={undefined}
-                          isAuth={undefined}/>
+                    <Post key={index}
+                          isLoading={true}
+                          id={undefined}
+                          title={undefined}
+                          createdAt={undefined}
+                          imageUrl={undefined}
+                          user={undefined}
+                          viewsCount={undefined}
+                          likes={undefined}
+                          children={undefined}
+                          isFullPost={undefined}
+                          isEditable={undefined}
+                          isAuth={undefined}
+                          currentUserId={undefined}
+                    />
                 ) : (
                     <Post
                       id={obj._id}
@@ -66,10 +77,13 @@ export const Home = () => {
                       createdAt={obj.createdAt}
                       viewsCount={obj.viewsCount}
                       likes={obj.likes}
-                      userId={userData?._id}
+                      currentUserId={userData?._id}
                       isAuth={isAuth}
-                      isEditable={userData?._id === obj.user._id} children={undefined} isFullPost={undefined}
-                      isLoading={undefined}                    />
+                      isEditable={userData?._id === obj.user._id}
+                      children={undefined}
+                      isFullPost={undefined}
+                      isLoading={undefined}
+                    />
               ))}
             </Grid>
           </Grid>

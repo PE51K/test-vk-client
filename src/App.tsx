@@ -1,9 +1,10 @@
-import Container from "@mui/material/Container";
-import {Header} from "./components";
-import { Home, FullPost, Registration, AddPost, Login, UserPage } from "./pages";
-import {Route, Routes} from "react-router-dom";
 import React from "react";
-import { fetchAuthMeFx } from "./effector";
+import {Route, Routes} from "react-router-dom";
+import Container from "@mui/material/Container";
+
+import {Header} from "./components";
+import {Home, FullPost, Registration, AddPost, Login, UserPage} from "./pages";
+import {fetchAuthMeFx} from "./effector";
 
 function App() {
     React.useEffect(() => {

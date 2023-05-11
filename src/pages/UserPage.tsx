@@ -2,8 +2,12 @@ import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
+import {useStore} from "effector-react";
+import {useParams} from "react-router-dom";
 
-import { Post } from '../components/Post';
+import axios from "../axios";
+import {UserInfoBlock} from "../components";
+import { Post } from '../components';
 import {
   $authData,
   $isAuth,
@@ -12,10 +16,6 @@ import {
   fetchAuthMeFx,
   fetchUserPostsFx
 } from "../effector";
-import {useStore} from "effector-react";
-import {useParams} from "react-router-dom";
-import axios from "../axios";
-import {UserInfoBlock} from "../components";
 
 export const UserPage = () => {
   const { id } = useParams();
@@ -41,7 +41,6 @@ export const UserPage = () => {
         alert('Ошибка при получении данных пользователя')
       })
     fetchAuthMeFx().finally();
-    // @ts-ignore
     fetchUserPostsFx(id).finally();
   }, [id, _id]);
 
@@ -58,10 +57,21 @@ export const UserPage = () => {
         <Grid xs={8} item>
           {(isPostsLoading ? [...Array(5)] : posts).map((obj, index) =>
             isPostsLoading ? (
-              <Post key={index} isLoading={true} id={undefined} title={undefined} createdAt={undefined}
-                    imageUrl={undefined} user={undefined} viewsCount={undefined} likes={undefined}
-                    children={undefined} isFullPost={undefined} isEditable={undefined} userId={undefined}
-                    isAuth={undefined}/>
+              <Post key={index}
+                    isLoading={true}
+                    id={undefined}
+                    title={undefined}
+                    createdAt={undefined}
+                    imageUrl={undefined}
+                    user={undefined}
+                    viewsCount={undefined}
+                    likes={undefined}
+                    children={undefined}
+                    isFullPost={undefined}
+                    isEditable={undefined}
+                    currentUserId={undefined}
+                    isAuth={undefined}
+              />
             ) : (
               <Post
                 id={obj._id}
@@ -71,10 +81,13 @@ export const UserPage = () => {
                 createdAt={obj.createdAt}
                 viewsCount={obj.viewsCount}
                 likes={obj.likes}
-                userId={_id}
+                currentUserId={_id}
                 isAuth={isAuth}
-                isEditable={_id === obj.user._id} children={undefined} isFullPost={undefined}
-                isLoading={undefined}                    />
+                isEditable={_id === obj.user._id}
+                children={undefined}
+                isFullPost={undefined}
+                isLoading={undefined}
+              />
             ))}
         </Grid>
         <Grid xs={4} item>

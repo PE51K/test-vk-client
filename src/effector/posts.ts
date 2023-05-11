@@ -2,41 +2,64 @@ import {createEffect, createStore} from 'effector';
 import axios from '..//axios'
 import {Post, PostsFetchingStatus} from "../types";
 
-export const fetchPostsFx = createEffect(async (): Promise<Post[]> => {
-  const { data } = await axios.get('/posts');
-  return data;
-})
-
-export const fetchFriendsPostsFx = createEffect(async (): Promise<Post[]> => {
-  const { data } = await axios.get('/friends/posts');
-  return data;
-})
-
-export const fetchRemovePostFx = createEffect(async (id: string) => {
-  await axios.delete(`/posts/${id}`)
-  return id;
-})
-
-export const fetchUserPostsFx = createEffect(async (userId: string): Promise<Post[]> => {
-  const { data } = await axios.get(`/users/${userId}/posts`);
-  return data;
-})
-
-export const fetchLikePostFx = createEffect(async ({// @ts-ignore
-                                                     postId, // @ts-ignore
-                                                     userId}) => {
-  console.log(postId, userId);
-  await axios.post(`/posts/${postId}/like`);
-  console.log(postId, userId);
-  return [postId,  userId];
+export const fetchPostsFx = createEffect(async (): Promise<Post[] | null> => {
+  try {
+    const { data } = await axios.get('/posts');
+    return data;
+  } catch (error: any) {
+    console.log('Error fetching posts:', error.message);
+    return null;
+  }
 });
 
-export const fetchUnlikePostFx = createEffect(async ({// @ts-ignore
-                                                        postId, // @ts-ignore
-                                                        userId}) => {
-  await axios.delete(`/posts/${postId}/like`);
-  console.log(postId, userId);
-  return [postId,  userId];
+export const fetchFriendsPostsFx = createEffect(async (): Promise<Post[] | null> => {
+  try {
+    const { data } = await axios.get('/friends/posts');
+    return data;
+  } catch (error: any) {
+    console.log('Error fetching friends posts:', error.message);
+    return null;
+  }
+});
+
+export const fetchRemovePostFx = createEffect(async (id: string): Promise<string | null> => {
+  try {
+    await axios.delete(`/posts/${id}`);
+    return id;
+  } catch (error: any) {
+    console.log('Error removing post:', error.message);
+    return null;
+  }
+});
+
+export const fetchUserPostsFx = createEffect(async (userId: string | undefined): Promise<Post[] | null> => {
+  try {
+    const { data } = await axios.get(`/users/${userId}/posts`);
+    return data;
+  } catch (error: any) {
+    console.log('Error fetching user posts:', error.message);
+    return null;
+  }
+});
+
+export const fetchLikePostFx = createEffect(async ({ postId, userId }: { postId: string; userId: string }): Promise<[string, string] | null> => {
+  try {
+    await axios.post(`/posts/${postId}/like`);
+    return [postId, userId];
+  } catch (error: any) {
+    console.log('Error liking post:', error.message);
+    return null;
+  }
+});
+
+export const fetchUnlikePostFx = createEffect(async ({ postId, userId }: { postId: string; userId: string }): Promise<[string, string] | null> => {
+  try {
+    await axios.delete(`/posts/${postId}/like`);
+    return [postId, userId];
+  } catch (error: any) {
+    console.log('Error unliking post:', error.message);
+    return null;
+  }
 });
 
 const initialPostsFetchingStatus: PostsFetchingStatus = {
@@ -116,7 +139,10 @@ $postsFetchingStatus
   });
 
 $posts
-  .on(fetchLikePostFx.done, (state, { result }) => {
+  .on(fetchLikePostFx.done, (state, { result }): Post[] => {
+    if (result === null) {
+      return state;
+    }
     const postId = result[0];
     const userId = result[1];
     return state.map((post) => {
@@ -129,7 +155,10 @@ $posts
       return post;
     });
   })
-  .on(fetchUnlikePostFx.done, (state, { result }) => {
+  .on(fetchUnlikePostFx.done, (state, { result }): Post[] => {
+    if (result === null) {
+      return state;
+    }
     const postId = result[0];
     const userId = result[1];
     return state.map((post) => {
@@ -142,15 +171,27 @@ $posts
       return post;
     });
   })
-  .on(fetchUserPostsFx.done, (state, { result }) => {
+  .on(fetchUserPostsFx.done, (state, { result }): Post[] => {
+    if (result === null) {
+      return state;
+    }
     return result;
   })
-  .on(fetchPostsFx.done, (state, { result }) => {
+  .on(fetchPostsFx.done, (state, { result }): Post[] => {
+    if (result === null) {
+      return state;
+    }
     return result;
   })
-  .on(fetchFriendsPostsFx.done, (state, { result }) => {
+  .on(fetchFriendsPostsFx.done, (state, { result }): Post[] => {
+    if (result === null) {
+      return state;
+    }
     return result;
   })
-  .on(fetchRemovePostFx.done, (state, { result }) => {
-    return state.filter(post => post._id !== result);
+  .on(fetchRemovePostFx.done, (state, { result }): Post[] => {
+    if (result === null) {
+      return state;
+    }
+    return state.filter((post) => post._id !== result);
   });

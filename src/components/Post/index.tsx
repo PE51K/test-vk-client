@@ -4,55 +4,47 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import {FavoriteBorderOutlined, FavoriteOutlined} from "@mui/icons-material";
+import {Link} from "react-router-dom";
 
 import styles from './Post.module.css';
-import { UserInfo } from '../UserInfo';
-import { PostSkeleton } from './Skeleton';
-import {Link} from "react-router-dom";
+import {UserInfo} from '../UserInfo';
+import {PostSkeleton} from './Skeleton';
 import {fetchLikePostFx, fetchRemovePostFx, fetchUnlikePostFx} from "../../effector";
-import {FavoriteBorderOutlined, FavoriteOutlined, MonitorHeart} from "@mui/icons-material";
+import {PostProps} from "../../interfaces";
 
 export const Post = ({
-  // @ts-ignore
-  id,// @ts-ignore
-  title, // @ts-ignore
-  createdAt, // @ts-ignore
-  imageUrl,// @ts-ignore
-  user,// @ts-ignore
-  viewsCount,// @ts-ignore
-
-
-  likes,// @ts-ignore
-  userId,// @ts-ignore
-  isAuth, // @ts-ignore
-
-  children,// @ts-ignore
-  isFullPost,// @ts-ignore
-  isLoading,// @ts-ignore
-  isEditable,// @ts-ignore
-}) => {
+  id,
+  title,
+  createdAt,
+  imageUrl,
+  viewsCount,
+  likes,
+  children,
+  isFullPost,
+  isLoading,
+  isEditable,
+  user,
+  isAuth,
+  currentUserId
+  }: PostProps) => {
   const [likesCount, setLikesCount] = React.useState(0);
   const [isLiked, setIsLiked] = React.useState(false);
 
   React.useEffect(() => {
-    if (likes) {
+    if (likes && currentUserId) {
       setLikesCount(likes.length);
-      setIsLiked(likes.includes(userId));
+      setIsLiked(likes.includes(currentUserId));
     }
-    console.log(userId)
-    console.log(likes)
-    console.log(isLiked)
   }, [likes]);
 
   const onClickLike = () => {
     if(isAuth) {
-      if (!isLiked) {
-        // @ts-ignore
-        fetchLikePostFx({postId: id, userId: userId}).finally()
+      if (!isLiked && id && currentUserId) {
+        fetchLikePostFx({ postId: id, userId: currentUserId }).finally();
         setIsLiked(!isLiked)
-      } else {
-        // @ts-ignore
-        fetchUnlikePostFx({postId: id, userId: userId}).finally()
+      } else if (isLiked && id && currentUserId) {
+        fetchUnlikePostFx({ postId: id, userId: currentUserId }).finally();
         setIsLiked(!isLiked)
       }
     }
@@ -60,7 +52,7 @@ export const Post = ({
 
   const onClickRemove = () => {
     if (window.confirm('Удалить пост?')) {
-      fetchRemovePostFx(id).finally()
+      if (id) fetchRemovePostFx(id).finally()
     }
   }
 
@@ -90,7 +82,7 @@ export const Post = ({
         />
       )}
       <div className={styles.wrapper}>
-        <UserInfo {...user} additionalText={createdAt} userId={user._id}/>
+        <UserInfo {...user} additionalText={createdAt}/>
         <div className={styles.indention}>
           <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
             {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}

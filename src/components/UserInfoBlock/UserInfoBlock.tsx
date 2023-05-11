@@ -1,13 +1,20 @@
 import React from "react";
 import Skeleton from "@mui/material/Skeleton";
-import { SideBlock } from "../SideBlock";
-import styles from "../UserInfo/UserInfo.module.css";
 import Button from "@mui/material/Button";
+
+import {SideBlock} from "../SideBlock";
+import styles from "../UserInfo/UserInfo.module.css";
 import axios from "../../axios";
+import {UserInfoBlockProps} from "../../interfaces";
 
 
-export const UserInfoBlock = ({   // @ts-ignore
-                                userData, isLoading, isCurrentUser, isAuth, CurrentUserId }) => {
+export const UserInfoBlock = ({
+  userData,
+  isLoading,
+  isCurrentUser,
+  isAuth,
+  CurrentUserId
+  }: UserInfoBlockProps) => {
   const [isFriend, setIsFriend] = React.useState(false);
 
   const onClickAddFriends = () => {
