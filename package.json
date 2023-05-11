@@ -2,6 +2,7 @@
   "name": "test_vk_client",
   "version": "1.0.0",
   "dependencies": {
+    "typescript": "*",
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
